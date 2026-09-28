@@ -21,6 +21,28 @@ app.use(cors({
 app.use('/api/auth', authRoutes);
 app.use('/api/enquiries', enquiryRoutes);
 
+// Health check routes
+app.get(['/health', '/api/health'], (req, res) => {
+  const dbState = mongoose.connection.readyState;
+  const states = {
+    0: 'Disconnected',
+    1: 'Connected',
+    2: 'Connecting',
+    3: 'Disconnecting'
+  };
+
+  res.status(200).json({
+    status: 'OK',
+    serverTime: new Date().toISOString(),
+    uptime: `${Math.floor(process.uptime())}s`,
+    database: {
+      status: states[dbState] || 'Unknown',
+      connected: dbState === 1
+    },
+    message: 'Noble Backend is running smoothly 🚀'
+  });
+});
+
 // Root route
 app.get('/', (req, res) => {
   res.json({
