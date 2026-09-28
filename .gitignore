@@ -1,0 +1,12 @@
+# Node modules
+node_modules
+*.log
+
+# Environment variables
+.env
+.env.*
+!.env.example
+
+# Vercel & build caches
+.vercel
+dist
