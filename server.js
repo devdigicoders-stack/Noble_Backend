@@ -55,25 +55,19 @@ app.get('/', (req, res) => {
 const PORT = process.env.PORT || 5000;
 const MONGODB_URI = process.env.MONGODB_URI || 'mongodb://127.0.0.1:27017/noble_housing';
 
-// Local & Serverless bootstrap
-if (process.env.NODE_ENV !== 'production') {
-  mongoose.connect(MONGODB_URI)
-    .then(() => {
-      console.log('✅ MongoDB connected successfully:', MONGODB_URI);
-      app.listen(PORT, () => {
-        console.log(`🚀 Server running on port ${PORT} -> http://localhost:${PORT}`);
-      });
-    })
-    .catch((err) => {
-      console.error('❌ MongoDB connection error:', err.message);
-      app.listen(PORT, () => {
-        console.log(`⚠️ Server running with DB warning on port ${PORT}`);
-      });
+// Connect to MongoDB & Start Server
+mongoose.connect(MONGODB_URI)
+  .then(() => {
+    console.log('✅ MongoDB connected successfully');
+    app.listen(PORT, '0.0.0.0', () => {
+      console.log(`🚀 Server running on port ${PORT}`);
     });
-} else {
-  mongoose.connect(MONGODB_URI)
-    .then(() => console.log('✅ MongoDB connected in production'))
-    .catch((err) => console.error('❌ MongoDB connection error:', err.message));
-}
+  })
+  .catch((err) => {
+    console.error('❌ MongoDB connection error:', err.message);
+    app.listen(PORT, '0.0.0.0', () => {
+      console.log(`⚠️ Server running with DB warning on port ${PORT}`);
+    });
+  });
 
 export default app;
